@@ -1,0 +1,47 @@
+def decode_measurement(word):
+    # Prefix to power mapping
+    prefix_power = {
+        'tera': 12,
+        'giga': 9,
+        'mega': 6,
+        'kilo': 3,
+        'deci': -1,
+        'centi': -2,
+        'milli': -3,
+        'micro': -6,
+        'nano': -9
+    }
+    
+    # Determine the base unit and its power
+    if 'meter^3' in word:
+        base_unit_power = 3
+        base_length = len('meter^3')
+    elif 'meter^2' in word:
+        base_unit_power = 2
+        base_length = len('meter^2')
+    else:
+        base_unit_power = 1
+        base_length = len('meter')
+    
+    # Remove the base unit part
+    prefix_part = word[:-base_length]
+    
+    # Calculate the total exponent from prefixes
+    total_exponent = 0
+    current_prefix = ''
+    
+    for char in prefix_part:
+        current_prefix += char
+        if current_prefix in prefix_power:
+            total_exponent += prefix_power[current_prefix]
+            current_prefix = ''
+    
+    # Adjust the exponent based on the power of the base unit
+    total_exponent *= base_unit_power
+    
+    return total_exponent
+
+# Example usage
+print(decode_measurement("meter"))       # Output: 0
+print(decode_measurement("kilometer"))   # Output: 3
+print(decode_measurement("centimeter^2")) # Output: -4
